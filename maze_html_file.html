@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Page Title</title>
+</head>
+<body>
+
+<h1><center>Gravity Maze</center></h1>
+
+<!-- CSS of buttons and divisions -->
+<style>
+/* Single Player Button */
+.button1 {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 100px 20px;
+    cursor: pointer;
+}
+/* Multi-Player Button */
+.button2 {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline;
+    font-size: 16px;
+    margin: 100px 20px;
+    cursor: pointer;
+
+}
+/* Left rotate Button */
+.button_rotate_left {
+    height: 200px;
+    width: 200px;
+    border-radius: 50%;
+    background-color: #4CAF50;
+    background-image:url(rotate_left.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    border: none
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    margin: 1000px 0.5px;
+    cursor: pointer;
+    background-size: 70%;
+    float: right;
+
+
+}
+/* DIV container that has left and right rotate button*/
+.container {
+  text-align: center;
+  display: inline-block;
+  position: fixed;
+  float: right;
+}
+
+/* Right Rotate Button */
+.button_rotate_left {
+    height: 200px;
+    width: 200px;
+    border-radius: 50%;
+    background-color: #4CAF50;
+    background-image:url(rotate_right.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 1000px 20px;
+    cursor: pointer;
+    background-size: 70%;
+    float: right;
+}
+
+</style>
+
+
+<!--single player-->
+<div>
+<button class="button1">Single Player</button>
+</div>
+<!--single player-->
+<div>
+<button class="button2">Multi-Player</button>
+<div>
+<!--Rotate the MAZE-->
+<div id = container>
+  <button class="button_rotate_left"></button>
+  <button class="button_rotate_right"></button>
+</div>
+
+</body>
+</html>
