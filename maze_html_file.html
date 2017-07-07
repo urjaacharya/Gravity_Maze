@@ -8,7 +8,7 @@
 <h1><center>Gravity Maze</center></h1>
 
 <!-- CSS of buttons and divisions -->
-<style>
+<style >
 /* Single Player Button */
 .button1 {
     background-color: #4CAF50;
@@ -51,7 +51,7 @@
     text-align: center;
     text-decoration: none;
     font-size: 16px;
-    margin: 1000px 0.5px;
+    margin: 400px 0.5px;
     cursor: pointer;
     background-size: 70%;
     float: right;
@@ -66,8 +66,14 @@
   float: right;
 }
 
+.maze {
+  text-align: center;
+  display: inline-block;
+  margin-left: 1000px;
+  /*float: right;*/
+}
 /* Right Rotate Button */
-.button_rotate_left {
+.button_rotate_right {
     height: 200px;
     width: 200px;
     border-radius: 50%;
@@ -82,23 +88,135 @@
     text-decoration: none;
     display: inline-block;
     font-size: 16px;
-    margin: 1000px 20px;
+    margin: 400px 20px;
     cursor: pointer;
     background-size: 70%;
     float: right;
 }
 
+
 </style>
+<script>
+
+//Function to generate initial maze
+//Generate a matrix with X, 1 and G at random places . But '1' and 'G' should only occur once
+function random_matrix_generator(){
+  var row_index = 0, col_index = 0, random_num;
+  var characters_to_choose_from = ['X', '1', 'G', ' ']; //As matrix should only have these charcters
+  var matrix_size = 5;       //Size of matrix
+  var maze = new Array(matrix_size);
+  var cell;
+  var id = 1;
+  while(row_index < matrix_size){
+    maze[row_index] = new Array(matrix_size);
+    col_index = 0;
+    var row = document.createElement('tr');
+    while(col_index < matrix_size){
+      random_num = Math.floor((Math.random() * characters_to_choose_from.length) + 1); //generate random number in the range (1, matrix_size)
+      maze[row_index][col_index] = characters_to_choose_from[random_num - 1];          //deduct one from random number in the index as index is from range (0, matrix_size - 1)
+
+      if (maze[row_index][col_index] == 'G' || maze[row_index][col_index] == '1'){
+        cell = document.getElementById (id.toString());
+        cell.textContent = maze[row_index][col_index];
+        characters_to_choose_from[random_num - 1] = characters_to_choose_from[random_num - 1].replace(maze[row_index][col_index], 'X');
+      }
+      else {
+        cell = document.getElementById (id.toString());
+        cell.textContent = maze[row_index][col_index];
+      }
+
+      id++;
+
+      col_index++;
+    }
+
+    row_index++;
+  }
+}
+
+</script>
+
+
+
+
 
 
 <!--single player-->
 <div>
-<button class="button1">Single Player</button>
+  <button class="button1" onclick = random_matrix_generator()>Single Player</button>
 </div>
 <!--single player-->
 <div>
-<button class="button2">Multi-Player</button>
+  <button class="button2">Multi-Player</button>
 <div>
+<div class = "maze">
+  <table border = "1" cellpadding="50" cellspacing="0">
+    <tr>
+      <td id = '1'>
+      </td>
+      <td id = '2'>
+      </td>
+      <td id = '3'>
+      </td>
+      <td id = '4'>
+      </td>
+      <td id = '5'>
+      </td>
+    </tr>
+
+    <tr>
+      <td id = '6'>
+      </td>
+      <td id = '7'>
+      </td>
+      <td id = '8'>
+      </td>
+      <td id = '9'>
+      </td>
+      <td id = '10'>
+      </td>
+    </tr>
+
+    <tr>
+      <td id = '11'>
+      </td>
+      <td id = '12'>
+      </td>
+      <td id = '13'>
+      </td>
+      <td id = '14'>
+      </td>
+      <td id = '15'>
+      </td>
+    </tr>
+
+    <tr>
+      <td id = '16'>
+      </td>
+      <td id = '17'>
+      </td>
+      <td id = '18'>
+      </td>
+      <td id = '19'>
+      </td>
+      <td id = '20'>
+      </td>
+    </tr>
+
+    <tr>
+      <td id = '21'>
+      </td>
+      <td id = '22'>
+      </td>
+      <td id = '23'>
+      </td>
+      <td id = '24'>
+      </td>
+      <td id = '25'>
+      </td>
+    </tr>
+  </table>
+</div>
 <!--Rotate the MAZE-->
 <div id = container>
   <button class="button_rotate_left"></button>
