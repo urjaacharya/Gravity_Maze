@@ -9,8 +9,8 @@
 
 <!-- CSS of buttons and divisions -->
 <style >
-/* Single Player Button */
-.button1 {
+/* Single Player and multi-player Button */
+.player_buttons {
     background-color: #4CAF50;
     border: none;
     color: white;
@@ -22,20 +22,7 @@
     margin: 100px 20px;
     cursor: pointer;
 }
-/* Multi-Player Button */
-.button2 {
-    background-color: #4CAF50;
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline;
-    font-size: 16px;
-    margin: 100px 20px;
-    cursor: pointer;
 
-}
 /* Left rotate Button */
 .button_rotate_left {
     height: 200px;
@@ -96,61 +83,70 @@
 
 
 </style>
-<script>
 
+<script>
 //Function to generate initial maze
 //Generate a matrix with X, 1 and G at random places . But '1' and 'G' should only occur once
+//'X' = Block in the maze
+//'G' = Goal of the maze
+//'1' = Location of player in the maze
 function random_matrix_generator(){
   var row_index = 0, col_index = 0, random_num;
-  var characters_to_choose_from = ['X', '1', 'G', ' ']; //As matrix should only have these charcters
-  var matrix_size = 5;       //Size of matrix
-  var maze = new Array(matrix_size);
-  var cell;
-  var id = 1;
+  var characters_to_choose_from = ['X', '1', 'G', ' ']; //Maze should only have these charcters
+  var matrix_size = 5;                                  //Size of matrix, right now it is fixed
+  var maze = new Array(matrix_size);                    //create maze of matrix_size * matrix_size
+  var cell;                                             //variable to assess each cell of the table
+  var id = 1;                                           //id to assess each cell of the table
+  //fill the maze with characters from array "characters_to_choose_from"
   while(row_index < matrix_size){
     maze[row_index] = new Array(matrix_size);
     col_index = 0;
-    var row = document.createElement('tr');
+
     while(col_index < matrix_size){
       random_num = Math.floor((Math.random() * characters_to_choose_from.length) + 1); //generate random number in the range (1, matrix_size)
       maze[row_index][col_index] = characters_to_choose_from[random_num - 1];          //deduct one from random number in the index as index is from range (0, matrix_size - 1)
 
+      //if random character is 'G' or '1' then put it in the maze and then remove it from "characters_to_choose_from" so that they do not occur more than once in the maze
       if (maze[row_index][col_index] == 'G' || maze[row_index][col_index] == '1'){
         cell = document.getElementById (id.toString());
         cell.textContent = maze[row_index][col_index];
         characters_to_choose_from[random_num - 1] = characters_to_choose_from[random_num - 1].replace(maze[row_index][col_index], 'X');
       }
+      //else continue generating random characters from "characters_to_choose_from"
       else {
         cell = document.getElementById (id.toString());
         cell.textContent = maze[row_index][col_index];
       }
-
+      //to get ID of each cell in the table
       id++;
-
+      //increase column index
       col_index++;
     }
-
+    //increase row index
     row_index++;
   }
 }
 
+//load the maze on each page load
+window.onload = function() {
+  random_matrix_generator();
+};
 </script>
 
 
 
 
-
-
 <!--single player-->
 <div>
-  <button class="button1" onclick = random_matrix_generator()>Single Player</button>
+  <button class="player_buttons" onclick = random_matrix_generator()>Single Player</button>
 </div>
-<!--single player-->
+<!--multi-player-->
 <div>
-  <button class="button2">Multi-Player</button>
-<div>
-<div class = "maze">
-  <table border = "1" cellpadding="50" cellspacing="0">
+  <button class="player_buttons">Multi-Player</button>
+</div>
+<!-- Maze -->
+<div class = "maze" id ="table">
+  <table border = "1" cellpadding="75" cellspacing="0">
     <tr>
       <td id = '1'>
       </td>
@@ -217,7 +213,7 @@ function random_matrix_generator(){
     </tr>
   </table>
 </div>
-<!--Rotate the MAZE-->
+<!--Buttons to rotate the MAZE-->
 <div id = container>
   <button class="button_rotate_left"></button>
   <button class="button_rotate_right"></button>
