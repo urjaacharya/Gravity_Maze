@@ -85,14 +85,33 @@
 </style>
 
 <script>
+
+//function to update the maze
+function update_matrix(maze){
+  var ind_column = 0, ind_row = 0, index_of_cell = 1;
+  var cell;
+  while (ind_row < 5){
+    ind_column = 0;
+    while(ind_column < 5){
+      cell = document.getElementById (index_of_cell.toString());
+      cell.textContent = maze[ind_row][ind_column];
+      ind_column++;
+      index_of_cell++;
+    }
+    ind_row++;
+  }
+}
+
 //Function to generate initial maze
 //Generate a matrix with X, 1 and G at random places . But '1' and 'G' should only occur once
 //'X' = Block in the maze
 //'G' = Goal of the maze
 //'1' = Location of player in the maze
-function random_matrix_generator(){
+
+function random_matrix_generator(characters){
   var row_index = 0, col_index = 0, random_num;
-  var characters_to_choose_from = ['X', '1', 'G', ' ']; //Maze should only have these charcters
+  characters_to_choose_from = characters;
+  //var characters_to_choose_from = "X1G ";//['X', '1', 'G', ' ']; //Maze should only have these charcters
   var matrix_size = 5;                                  //Size of matrix, right now it is fixed
   var maze = new Array(matrix_size);                    //create maze of matrix_size * matrix_size
   var cell;                                             //variable to assess each cell of the table
@@ -107,15 +126,15 @@ function random_matrix_generator(){
       maze[row_index][col_index] = characters_to_choose_from[random_num - 1];          //deduct one from random number in the index as index is from range (0, matrix_size - 1)
 
       //if random character is 'G' or '1' then put it in the maze and then remove it from "characters_to_choose_from" so that they do not occur more than once in the maze
-      if (maze[row_index][col_index] == 'G' || maze[row_index][col_index] == '1'){
-        cell = document.getElementById (id.toString());
-        cell.textContent = maze[row_index][col_index];
+      if (maze[row_index][col_index] != 'X' && maze[row_index][col_index] != ' '){
+        //cell = document.getElementById (id.toString());
+        //cell.textContent = maze[row_index][col_index];
         characters_to_choose_from[random_num - 1] = characters_to_choose_from[random_num - 1].replace(maze[row_index][col_index], 'X');
       }
       //else continue generating random characters from "characters_to_choose_from"
       else {
-        cell = document.getElementById (id.toString());
-        cell.textContent = maze[row_index][col_index];
+        //cell = document.getElementById (id.toString());
+        //cell.textContent = maze[row_index][col_index];
       }
       //to get ID of each cell in the table
       id++;
@@ -125,24 +144,71 @@ function random_matrix_generator(){
     //increase row index
     row_index++;
   }
+
+  return maze;
+}
+
+//load a random maze when single player button is pressed
+function load_player_maze(characters_based_on_players_num){
+  var maze_matrix = random_matrix_generator(characters_based_on_players_num);
+  update_matrix(maze_matrix);
+  maze_global = maze_matrix;
+}
+
+//Clockwise rotation of maze
+//Rotate the maze in clockwise direction and apply gravity
+function clockwise_rotate(maze_global){
+  var temp=new Array();
+  var mazenum = new Array();
+  var rot = new Array();
+  var n = maze.length;
+
+  //store the values in a new array
+  for(i=0;i<n;i++){
+    mazenum[i] = new Array();
+    for(j=0;j<maze[0].length;j++){
+      mazenum[i][j]=maze_global[i][j];
+    }
+  }
+
+  //create the transpose of the given maze matrix in new array
+  for(i=0;i<maze_global[0].length;i++)
+  {
+    temp[i] = new Array();
+    for(j=0;j<maze.length;j++)
+    {
+      temp[i].push( mazenum[j][i]);
+    }
+  }
+
+  //rotate the array clockwise
+  for(i=0;i<temp.length;i++)
+  {
+    rot[i] = new Array();
+    for(j=maze_global.length-1;j>=0;j--)
+    {
+      rot[i][j] = temp[i][maze_global.length-1-j];
+    }
+  }
+  update_matrix(rot);
+  return rot;
 }
 
 //load the maze on each page load
 window.onload = function() {
-  random_matrix_generator();
+  var maze_matrix = random_matrix_generator(['X']);
+  update_matrix(maze_matrix);
 };
 </script>
 
 
-
-
 <!--single player-->
 <div>
-  <button class="player_buttons" onclick = random_matrix_generator()>Single Player</button>
+  <button class="player_buttons" onclick = "load_player_maze(['X', '1', 'G', ' '])"> Single Player </button>
 </div>
 <!--multi-player-->
 <div>
-  <button class="player_buttons">Multi-Player</button>
+  <button class="player_buttons" onclick = "load_player_maze(['X', '1', 'G', ' ', '2'])">Multi-Player</button>
 </div>
 <!-- Maze -->
 <div class = "maze" id ="table">
@@ -215,7 +281,7 @@ window.onload = function() {
 </div>
 <!--Buttons to rotate the MAZE-->
 <div id = container>
-  <button class="button_rotate_left"></button>
+  <button class="button_rotate_left" onclick = "clockwise_rotate(maze_global)"></button>
   <button class="button_rotate_right"></button>
 </div>
 
