@@ -102,9 +102,9 @@ function update_matrix(maze1){
 }
 
 //Function to generate initial maze
-//Generate a matrix with X, 1 and G at random places . But '1' and 'G' should only occur once
-//'X' = Block in the maze
-//'G' = Goal of the maze
+//Generate a matrix with X, 1 and G at random places . But '1' and 'g' should only occur once
+//'x' = Block in the maze
+//'g' = Goal of the maze
 //'1' = Location of player in the maze
 
 function random_matrix_generator(characters){
@@ -122,9 +122,9 @@ function random_matrix_generator(characters){
       random_num = Math.floor((Math.random() * characters_to_choose_from.length) + 1); //generate random number in the range (1, matrix_size)
       maze[row_index][col_index] = characters_to_choose_from[random_num - 1];          //deduct one from random number in the index as index is from range (0, matrix_size - 1)
 
-      //if random character is 'G' or '1' then put it in the maze and then remove it from "characters_to_choose_from" so that they do not occur more than once in the maze
-      if (maze[row_index][col_index] != 'X' && maze[row_index][col_index] != ' '){
-        characters_to_choose_from[random_num - 1] = characters_to_choose_from[random_num - 1].replace(maze[row_index][col_index], 'X');
+      //if random character is 'g' or '1' then put it in the maze and then remove it from "characters_to_choose_from" so that they do not occur more than once in the maze
+      if (maze[row_index][col_index] != 'x' && maze[row_index][col_index] != ' '){
+        characters_to_choose_from[random_num - 1] = characters_to_choose_from[random_num - 1].replace(maze[row_index][col_index], 'x');
       }
 
       //to get ID of each cell in the table
@@ -177,9 +177,13 @@ function clockwise_rotate(maze_global){
   return rot;
 }
 
+//drop player
+function drop_player(){
+
+}
 //load the maze on each page load
 window.onload = function() {
-  var maze_matrix = random_matrix_generator(['X']);
+  var maze_matrix = random_matrix_generator(['x']);
   update_matrix(maze_matrix);
   window.maze_global1 = maze_matrix;
 };
@@ -194,6 +198,7 @@ function load_player_maze(characters_based_on_players_num){
 //clockwise rotate and update matrix
 function clockwise_rotate_update(){
   rotated_matrix = clockwise_rotate(maze_global1);
+  rotated_matrix  = drop(rotated_matrix);
   update_matrix(rotated_matrix);
   maze_global1 = rotated_matrix;
 }
@@ -203,18 +208,81 @@ function anticlockwise_rotate_update(){
   rotated_matrix = clockwise_rotate(maze_global1);
   rotated_matrix = clockwise_rotate(rotated_matrix);
   rotated_matrix = clockwise_rotate(rotated_matrix);
+  rotated_matrix  = drop(rotated_matrix);
   update_matrix(rotated_matrix);
   maze_global1 = rotated_matrix;
 }
+
+function drop(maze) {
+  var play_pos_i = new Array();        //position of player[i,j]
+  var play_pos_j = new Array();
+  var n1,g,flag=0,count=0,goal_i=0,goal_j=0,player_name;
+  var player_value = new Array();
+
+  //store the rotated matrix in rot rot = clock_rotate(maze);
+  rot=maze;
+  var player_count = 0; //player_count is the number or count of the players in the maze
+  //Find the position of all players and goal
+  for(i=0;i<rot.length-1;i++) {
+    for(j=0;j<rot[0].length-1;j++) {
+      //if player is found in maze
+      if(!(rot[i][j]=='x'||rot[i][j]==' '||rot[i][j]=='g')){
+        //store row and column index of player
+        play_pos_i[player_count] = i; //row index
+        play_pos_j[player_count] = j; //column index
+        player_value[player_count] = rot[i][j]; //which player
+        player_count++;
+      }
+      //if goal is encountered
+      else if(rot[i][j]=='g'){
+        //store row and column index of goal
+        goal_i = i; //row index
+        goal_j = j; //column index
+      }
+    }
+  }
+
+    //start dropping players found at the last and proceed upwards
+    for(player_count = player_value.length - 1; player_count >= 0; player_count--) {
+      player_row_index = play_pos_i[player_count];
+      //drop the player
+      for (k = player_row_index + 1; k < rot.length; k++) {
+        if(rot[k][play_pos_j[player_count]] == ' ') {
+          rot[k][play_pos_j[player_count]] = rot[play_pos_i[player_count]][play_pos_j[player_count]];
+          rot[play_pos_i[player_count]][play_pos_j[player_count]] = ' ';
+          play_pos_i[player_count] = k;
+        }
+        else if (rot[k][play_pos_j[player_count]] !== 'g' && rot[k][play_pos_j[player_count]] !== ' ') {
+          k = rot.length;
+        }
+        else if (rot[k][play_pos_j[player_count]] == 'g') {
+          rot[k][play_pos_j[player_count]] = 'x';
+          flag = 1;
+          goal_i = k;
+          goal_j = play_pos_j[player_count];
+          rot[play_pos_i[player_count]][play_pos_j[player_count]] = ' ';
+          play_pos_i[player_count] = k;
+          k = rot.length;
+          player_name = player_value[player_count];
+        }
+
+        if(flag == 1) {
+          rot[goal_i][goal_j] = player_name;
+        }
+      }
+    }
+    return rot;
+  }
+
 </script>
 
 <!--single player-->
 <div>
-  <button class="player_buttons" onclick = "load_player_maze(['X', '1', 'G', ' '])"> Single Player </button>
+  <button class="player_buttons" onclick = "load_player_maze(['x', '1', 'g', ' '])"> Single Player </button>
 </div>
 <!--multi-player-->
 <div>
-  <button class="player_buttons" onclick = "load_player_maze(['X', '1', 'G', ' ', '2'])">Multi-Player</button>
+  <button class="player_buttons" onclick = "load_player_maze(['x', '1', 'g', ' ', '2'])">Multi-Player</button>
 </div>
 <!-- Maze -->
 <div class = "maze" id ="table">
